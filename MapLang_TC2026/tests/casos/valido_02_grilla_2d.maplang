@@ -1,0 +1,17 @@
+MAP "Cripta_Olvidada" SIZE 3x3 {
+    ROOM(0,0) TYPE=entrada EXITS=[este, sur]
+    ROOM(1,0) TYPE=pasillo EXITS=[este, oeste, sur]
+    ROOM(2,0) TYPE=tienda NPC=mercader EXITS=[oeste, sur]
+    ROOM(0,1) TYPE=trampa EXITS=[norte, este]
+    ROOM(1,1) TYPE=combate ENEMY=esqueleto LEVEL=3 EXITS=[norte, este, oeste, sur]
+    ROOM(2,1) TYPE=tesoro ITEM=amuleto EXITS=[norte, oeste, sur]
+    ROOM(1,2) TYPE=jefe ENEMY=lich LEVEL=15 EXITS=[norte]
+    CONNECT (0,0)->(1,0)
+    CONNECT (1,0)->(2,0)
+    CONNECT (0,0)->(0,1)
+    CONNECT (1,0)->(1,1)
+    CONNECT (2,0)->(2,1)
+    CONNECT (0,1)->(1,1)
+    CONNECT (2,1)->(1,1)
+    CONNECT (1,1)->(1,2) via "puerta_final"
+}

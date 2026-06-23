@@ -1,0 +1,7 @@
+// Verifica que el orden de los atributos dentro de ROOM es libre
+// (decisión de diseño documentada en el Avance 2: <atributo> admite cualquier orden).
+MAP "Orden_Alterado" SIZE 2x1 {
+    ROOM(0,0) ENEMY=zombie LEVEL=1 TYPE=combate EXITS=[este]
+    ROOM(1,0) ITEM=llave_oxidada TYPE=tesoro
+    CONNECT (0,0)->(1,0)
+}

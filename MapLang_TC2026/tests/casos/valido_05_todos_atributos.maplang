@@ -1,0 +1,3 @@
+MAP "Sala_Completa" SIZE 50x50 {
+    ROOM(25,25) TYPE=jefe EXITS=[norte,sur,este,oeste,arriba,abajo] ENEMY=behemoth LEVEL=99 ITEM=corona_perdida NPC=espiritu_guardian
+}

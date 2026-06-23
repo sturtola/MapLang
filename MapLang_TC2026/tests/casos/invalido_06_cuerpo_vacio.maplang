@@ -1,0 +1,4 @@
+// Caso límite: el cuerpo del mapa no contiene ninguna declaración.
+// Es sintácticamente inválido porque <cuerpo> ::= <declaracion>+ exige al menos una.
+MAP "Mapa_Vacio" SIZE 5x5 {
+}

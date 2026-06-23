@@ -1,0 +1,3 @@
+MAP "Tipo_Invalido" SIZE 2x2 {
+    ROOM(0,0) TYPE=castillo
+}

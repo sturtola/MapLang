@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>MapLang — Prototipo Visual</title>
+<style>
+  :root {
+    --bg: #15151a;
+    --panel: #1e1e24;
+    --panel-2: #26262e;
+    --border: #34343d;
+    --gold: #d4af37;
+    --gold-soft: #e8c766;
+    --white: #f0f0f2;
+    --gray: #8e8e98;
+    --green: #3ddc97;
+    --red: #e2574c;
+    --mono: "SF Mono", "Cascadia Code", Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    background: var(--bg); color: var(--white);
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  header {
+    display: flex; align-items: baseline; gap: 14px;
+    padding: 22px 28px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  header h1 {
+    margin: 0; font-size: 22px; letter-spacing: 0.5px;
+  }
+  header h1 .accent { color: var(--gold); }
+  header p {
+    margin: 0; color: var(--gray); font-size: 13.5px;
+  }
+  main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    padding: 18px 28px 28px;
+    height: calc(100% - 78px);
+  }
+  .col { display: flex; flex-direction: column; gap: 14px; min-height: 0; }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .panel-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12.5px; color: var(--gray); letter-spacing: 0.8px; text-transform: uppercase;
+  }
+  textarea#code {
+    flex: 1;
+    resize: none; border: none; outline: none;
+    background: var(--panel);
+    color: var(--white);
+    font-family: var(--mono);
+    font-size: 14px; line-height: 1.55;
+    padding: 16px;
+    tab-size: 4;
+  }
+  .toolbar {
+    display: flex; gap: 10px; align-items: center; padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    background: var(--panel-2);
+  }
+  button#run {
+    background: var(--gold); color: #1a1a1a; border: none;
+    font-weight: 700; font-size: 14px;
+    padding: 10px 22px; border-radius: 7px; cursor: pointer;
+    transition: transform 0.08s ease, background 0.15s ease;
+  }
+  button#run:hover { background: var(--gold-soft); }
+  button#run:active { transform: scale(0.97); }
+  button#run:disabled { opacity: 0.5; cursor: default; }
+  select#example {
+    background: var(--bg); color: var(--white);
+    border: 1px solid var(--border); border-radius: 6px;
+    padding: 9px 10px; font-size: 13px; font-family: inherit;
+  }
+  .status {
+    margin-left: auto; font-size: 13px; font-weight: 600;
+  }
+  .status.ok { color: var(--green); }
+  .status.err { color: var(--red); }
+  .status.idle { color: var(--gray); font-weight: 400; }
+
+  .tabs {
+    display: flex; gap: 2px; padding: 8px 12px 0;
+    background: var(--panel);
+  }
+  .tab {
+    padding: 8px 14px; font-size: 12.5px; color: var(--gray);
+    cursor: pointer; border-radius: 6px 6px 0 0;
+    border: 1px solid transparent;
+  }
+  .tab.active {
+    color: var(--gold-soft); background: var(--panel-2);
+    border-color: var(--border); border-bottom-color: var(--panel-2);
+  }
+  .tab-content { flex: 1; overflow: auto; display: none; }
+  .tab-content.active { display: block; }
+
+  #tree-view, #tokens-view {
+    margin: 0; padding: 16px; font-family: var(--mono); font-size: 12.5px;
+    color: var(--white); white-space: pre; line-height: 1.6;
+  }
+  #image-view {
+    display: flex; align-items: center; justify-content: center;
+    padding: 16px; height: 100%;
+  }
+  #image-view img { max-width: 100%; border-radius: 6px; }
+  #image-view .placeholder {
+    color: var(--gray); font-size: 13.5px; text-align: center; line-height: 1.7;
+  }
+
+  .errors-panel {
+    flex: 1; overflow: auto; padding: 14px 16px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .error-item {
+    background: rgba(226, 87, 76, 0.1);
+    border: 1px solid rgba(226, 87, 76, 0.4);
+    border-radius: 7px; padding: 10px 14px;
+    font-size: 13px;
+  }
+  .error-item .loc {
+    color: var(--red); font-weight: 700; font-family: var(--mono); font-size: 12px;
+  }
+  .error-item .msg { color: var(--white); margin-top: 3px; }
+  .empty-errors {
+    color: var(--gray); font-size: 13px; padding: 16px; text-align: center;
+  }
+
+  .stats-row {
+    display: flex; gap: 10px; padding: 12px 16px 0;
+  }
+  .stat {
+    flex: 1; background: var(--panel-2); border: 1px solid var(--border);
+    border-radius: 7px; padding: 8px 10px; text-align: center;
+  }
+  .stat .n { font-size: 20px; font-weight: 700; color: var(--gold-soft); }
+  .stat .l { font-size: 10.5px; color: var(--gray); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  ::-webkit-scrollbar { width: 9px; height: 9px; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1><span class="accent">Map</span>Lang — Prototipo Visual</h1>
+  <p>Escribí código MapLang, generá el mapa, y mirá el AST y los errores en tiempo real.</p>
+</header>
+
+<main>
+  <!-- COLUMNA IZQUIERDA: editor -->
+  <div class="col">
+    <div class="panel" style="flex:1;">
+      <div class="panel-head">
+        <span>Código fuente (.maplang)</span>
+        <span id="char-count">0 caracteres</span>
+      </div>
+      <textarea id="code" spellcheck="false"></textarea>
+      <div class="toolbar">
+        <button id="run">▶ Generar mapa</button>
+        <select id="example">
+          <option value="">— Cargar ejemplo —</option>
+          <option value="dragon">Mazmorra del Dragón (lineal)</option>
+          <option value="grid">Cripta Olvidada (grilla 3×3)</option>
+          <option value="broken">Ejemplo con errores</option>
+        </select>
+        <span id="status" class="status idle">Esperando...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- COLUMNA DERECHA: resultado -->
+  <div class="col">
+    <div class="panel" style="flex:1;">
+      <div class="tabs">
+        <div class="tab active" data-tab="image">Mapa renderizado</div>
+        <div class="tab" data-tab="tree">Árbol AST</div>
+        <div class="tab" data-tab="tokens">Tokens</div>
+        <div class="tab" data-tab="errors">Errores <span id="error-badge"></span></div>
+      </div>
+      <div class="stats-row" id="stats-row" style="display:none;">
+        <div class="stat"><div class="n" id="stat-mapas">0</div><div class="l">mapas</div></div>
+        <div class="stat"><div class="n" id="stat-salas">0</div><div class="l">salas</div></div>
+        <div class="stat"><div class="n" id="stat-conexiones">0</div><div class="l">conexiones</div></div>
+      </div>
+      <div class="tab-content active" id="tab-image">
+        <div id="image-view"><div class="placeholder">Escribí código MapLang a la izquierda<br>y apretá «Generar mapa».</div></div>
+      </div>
+      <div class="tab-content" id="tab-tree">
+        <pre id="tree-view"></pre>
+      </div>
+      <div class="tab-content" id="tab-tokens">
+        <pre id="tokens-view"></pre>
+      </div>
+      <div class="tab-content" id="tab-errors">
+        <div class="errors-panel" id="errors-panel">
+          <div class="empty-errors">No hay errores para mostrar todavía.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+const EXAMPLES = {
+  dragon: `MAP "Mazmorra_del_Dragon" SIZE 4x1 {
+    ROOM(0,0) TYPE=entrada EXITS=[este]
+    ROOM(1,0) TYPE=combate ENEMY=goblin LEVEL=2 EXITS=[este, oeste]
+    ROOM(2,0) TYPE=tesoro ITEM=pocion_vida EXITS=[este, oeste]
+    ROOM(3,0) TYPE=jefe ENEMY=dragon LEVEL=10 EXITS=[oeste]
+    CONNECT (0,0)->(1,0) via "corredor_este"
+    CONNECT (1,0)->(2,0) via "puerta_madera"
+    CONNECT (2,0)->(3,0) via "puerta_secreta"
+}`,
+  grid: `MAP "Cripta_Olvidada" SIZE 3x3 {
+    ROOM(0,0) TYPE=entrada EXITS=[este, sur]
+    ROOM(1,0) TYPE=pasillo EXITS=[este, oeste, sur]
+    ROOM(2,0) TYPE=tienda NPC=mercader EXITS=[oeste, sur]
+    ROOM(0,1) TYPE=trampa EXITS=[norte, este]
+    ROOM(1,1) TYPE=combate ENEMY=esqueleto LEVEL=3 EXITS=[norte, este, oeste, sur]
+    ROOM(2,1) TYPE=tesoro ITEM=amuleto EXITS=[norte, oeste, sur]
+    ROOM(1,2) TYPE=jefe ENEMY=lich LEVEL=15 EXITS=[norte]
+    CONNECT (0,0)->(1,0)
+    CONNECT (1,0)->(2,0)
+    CONNECT (0,0)->(0,1)
+    CONNECT (1,0)->(1,1)
+    CONNECT (2,0)->(2,1)
+    CONNECT (0,1)->(1,1)
+    CONNECT (2,1)->(1,1)
+    CONNECT (1,1)->(1,2) via "puerta_final"
+}`,
+  broken: `MAP "Mapa_Roto" SIZE 3x3 {
+    ROOM(0,0 TYPE=entrada
+    ROOM(1,) TYPE=combate
+    CONNECT (0,0)-> via "x"
+}`,
+};
+
+const codeEl = document.getElementById("code");
+const runBtn = document.getElementById("run");
+const statusEl = document.getElementById("status");
+const exampleSel = document.getElementById("example");
+const charCount = document.getElementById("char-count");
+
+codeEl.value = EXAMPLES.dragon;
+updateCharCount();
+
+codeEl.addEventListener("input", updateCharCount);
+function updateCharCount() {
+  charCount.textContent = codeEl.value.length + " caracteres";
+}
+
+exampleSel.addEventListener("change", () => {
+  if (exampleSel.value) {
+    codeEl.value = EXAMPLES[exampleSel.value];
+    updateCharCount();
+  }
+});
+
+// --- Tabs ---
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+    tab.classList.add("active");
+    document.getElementById("tab-" + tab.dataset.tab).classList.add("active");
+  });
+});
+
+function setActiveTab(name) {
+  document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === name));
+  document.querySelectorAll(".tab-content").forEach(c => c.classList.toggle("active", c.id === "tab-" + name));
+}
+
+runBtn.addEventListener("click", runCode);
+codeEl.addEventListener("keydown", (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key === "Enter") runCode();
+});
+
+async function runCode() {
+  runBtn.disabled = true;
+  statusEl.textContent = "Procesando...";
+  statusEl.className = "status idle";
+
+  try {
+    const res = await fetch("/run", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ source: codeEl.value }),
+    });
+    const data = await res.json();
+    render(data);
+  } catch (err) {
+    statusEl.textContent = "No se pudo conectar al servidor";
+    statusEl.className = "status err";
+    showErrors([{ line: 0, column: 0, message: "No se pudo conectar con server.py. ¿Está corriendo?" }], "interno");
+  } finally {
+    runBtn.disabled = false;
+  }
+}
+
+function render(data) {
+  const badge = document.getElementById("error-badge");
+  const statsRow = document.getElementById("stats-row");
+
+  if (data.ok) {
+    statusEl.textContent = "✓ Aceptado sin errores";
+    statusEl.className = "status ok";
+    badge.textContent = "";
+
+    document.getElementById("tree-view").textContent = data.tree;
+    document.getElementById("tokens-view").textContent =
+      data.tokens.map(t => `L${t.line}:C${t.column}\t${t.type.padEnd(11)}\t${t.value}`).join("\n");
+
+    const imgView = document.getElementById("image-view");
+    if (data.images && data.images.length) {
+      imgView.innerHTML = data.images.map(im =>
+        `<img src="data:image/png;base64,${im.data}" alt="${im.nombre}">`
+      ).join("<hr style='border-color:#34343d; width:100%;'>");
+    }
+
+    statsRow.style.display = "flex";
+    document.getElementById("stat-mapas").textContent = data.num_mapas;
+    document.getElementById("stat-salas").textContent = data.num_salas;
+    document.getElementById("stat-conexiones").textContent = data.num_conexiones;
+
+    document.getElementById("errors-panel").innerHTML =
+      '<div class="empty-errors">No hay errores. ✓</div>';
+
+    setActiveTab("image");
+  } else {
+    const stageLabel = { lexico: "léxico", sintactico: "sintáctico", semantico: "semántico", interno: "interno" }[data.stage] || data.stage;
+    statusEl.textContent = `✗ Error ${stageLabel} (${data.errors.length})`;
+    statusEl.className = "status err";
+    badge.textContent = data.errors.length;
+
+    statsRow.style.display = "none";
+    document.getElementById("image-view").innerHTML =
+      '<div class="placeholder">El código tiene errores.<br>Revisá la pestaña «Errores».</div>';
+    document.getElementById("tree-view").textContent = "";
+    document.getElementById("tokens-view").textContent = "";
+
+    showErrors(data.errors, data.stage);
+    setActiveTab("errors");
+  }
+}
+
+function showErrors(errors, stage) {
+  const panel = document.getElementById("errors-panel");
+  if (!errors.length) {
+    panel.innerHTML = '<div class="empty-errors">No hay errores.</div>';
+    return;
+  }
+  panel.innerHTML = errors.map(e => `
+    <div class="error-item">
+      <div class="loc">Línea ${e.line}${e.column ? ", columna " + e.column : ""}</div>
+      <div class="msg">${escapeHtml(e.message)}</div>
+    </div>
+  `).join("");
+}
+
+function escapeHtml(s) {
+  const div = document.createElement("div");
+  div.textContent = s;
+  return div.innerHTML;
+}
+
+// Ejecuta automáticamente el ejemplo inicial al cargar la página
+runCode();
+</script>
+</body>
+</html>

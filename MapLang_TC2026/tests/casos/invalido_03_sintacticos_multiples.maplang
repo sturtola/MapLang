@@ -1,0 +1,5 @@
+MAP "Mapa_Roto" SIZE abc {
+    ROOM(0,0 TYPE=entrada
+    ROOM(1,) TYPE=combate
+    CONNECT (0,0)-> via "x"
+}

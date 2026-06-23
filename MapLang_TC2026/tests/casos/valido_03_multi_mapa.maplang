@@ -1,0 +1,12 @@
+// Programa con dos mapas independientes (recursividad de <programa>)
+MAP "Nivel_1" SIZE 2x1 {
+    ROOM(0,0) TYPE=entrada EXITS=[este]
+    ROOM(1,0) TYPE=jefe ENEMY=ogro LEVEL=5 EXITS=[oeste]
+    CONNECT (0,0)->(1,0)
+}
+
+MAP "Nivel_2" SIZE 2x1 {
+    ROOM(0,0) TYPE=entrada EXITS=[este]
+    ROOM(1,0) TYPE=jefe ENEMY=hidra LEVEL=8 EXITS=[oeste]
+    CONNECT (0,0)->(1,0) via "portal"
+}

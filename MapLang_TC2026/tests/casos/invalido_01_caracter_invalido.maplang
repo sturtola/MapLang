@@ -1,0 +1,3 @@
+MAP "Mapa_Con_Error" SIZE 2x2 {
+    ROOM(0,0) TYPE=entrada # comentario mal escrito, no es //
+}

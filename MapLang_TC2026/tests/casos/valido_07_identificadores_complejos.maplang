@@ -1,0 +1,9 @@
+MAP "El_Templo_Sumergido_Nivel_3b" SIZE 4x2 {
+    ROOM(0,0) TYPE=entrada EXITS=[este] ENEMY=cangrejo_gigante_2
+    ROOM(1,0) TYPE=pasillo EXITS=[este,oeste]
+    ROOM(2,0) TYPE=combate EXITS=[este,oeste] ENEMY=sirena_oscura LEVEL=7
+    ROOM(3,0) TYPE=tesoro EXITS=[oeste] ITEM=tridente_de_neptuno_v2
+    CONNECT (0,0)->(1,0)
+    CONNECT (1,0)->(2,0) via "corredor_inundado_1"
+    CONNECT (2,0)->(3,0)
+}

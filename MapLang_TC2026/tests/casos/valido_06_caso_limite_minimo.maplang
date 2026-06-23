@@ -1,0 +1,4 @@
+// Caso límite: el mapa más pequeño posible (1x1), una única sala sin salidas.
+MAP "Celda_Aislada" SIZE 1x1 {
+    ROOM(0,0) TYPE=trampa
+}

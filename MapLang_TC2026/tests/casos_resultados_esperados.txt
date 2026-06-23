@@ -1,0 +1,61 @@
+==============================================================================
+MAPLANG — ARCHIVO DE CASOS DE PRUEBA Y SALIDAS ESPERADAS
+Generado automáticamente ejecutando main.py sobre cada caso en tests/casos/
+==============================================================================
+
+CASO: invalido_01_caracter_invalido.maplang
+EXIT_CODE_ESPERADO: 1
+STDERR:
+Error léxico en línea 2, columna 28: carácter inesperado '#'
+------------------------------------------------------------------------------
+CASO: invalido_02_cadena_sin_cerrar.maplang
+EXIT_CODE_ESPERADO: 1
+STDERR:
+Error léxico en línea 1, columna 5: cadena sin cerrar (falta comilla de cierre)
+------------------------------------------------------------------------------
+CASO: invalido_03_sintacticos_multiples.maplang
+EXIT_CODE_ESPERADO: 2
+STDERR:
+Error de sintaxis en línea 1, columna 22: se esperaba una dimensión del tipo NxM (ej. 8x8) pero se encontró 'abc' (IDENTIFIER)
+------------------------------------------------------------------------------
+CASO: invalido_04_tipo_sala_invalido.maplang
+EXIT_CODE_ESPERADO: 2
+STDERR:
+Error de sintaxis en línea 2, columna 20: se esperaba un tipo de sala válido (entrada, pasillo, combate, tesoro, jefe, tienda o trampa) pero se encontró 'castillo' (IDENTIFIER)
+------------------------------------------------------------------------------
+CASO: invalido_05_errores_semanticos.maplang
+EXIT_CODE_ESPERADO: 3
+STDERR:
+Error semántico (línea 6): ya existe una sala declarada en (0,0) (primera declaración en línea 5)
+Error semántico (línea 7): la sala (5,5) está fuera de los límites del mapa 'Test_Semantico' (2x2)
+Error semántico (línea 8): CONNECT referencia la sala de destino (9, 9) que no fue declarada en el mapa 'Test_Semantico'
+------------------------------------------------------------------------------
+CASO: invalido_06_cuerpo_vacio.maplang
+EXIT_CODE_ESPERADO: 2
+STDERR:
+Error de sintaxis en línea 4, columna 1: el cuerpo del mapa está vacío (se esperaba al menos una declaración ROOM o CONNECT)
+------------------------------------------------------------------------------
+CASO: valido_01_lineal.maplang
+EXIT_CODE_ESPERADO: 0
+------------------------------------------------------------------------------
+CASO: valido_02_grilla_2d.maplang
+EXIT_CODE_ESPERADO: 0
+------------------------------------------------------------------------------
+CASO: valido_03_multi_mapa.maplang
+EXIT_CODE_ESPERADO: 0
+------------------------------------------------------------------------------
+CASO: valido_04_comentarios.maplang
+EXIT_CODE_ESPERADO: 0
+------------------------------------------------------------------------------
+CASO: valido_05_todos_atributos.maplang
+EXIT_CODE_ESPERADO: 0
+------------------------------------------------------------------------------
+CASO: valido_06_caso_limite_minimo.maplang
+EXIT_CODE_ESPERADO: 0
+------------------------------------------------------------------------------
+CASO: valido_07_identificadores_complejos.maplang
+EXIT_CODE_ESPERADO: 0
+------------------------------------------------------------------------------
+CASO: valido_08_orden_libre_atributos.maplang
+EXIT_CODE_ESPERADO: 0
+------------------------------------------------------------------------------

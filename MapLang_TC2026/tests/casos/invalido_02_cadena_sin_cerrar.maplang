@@ -1,0 +1,3 @@
+MAP "Mapa_Sin_Cerrar SIZE 2x2 {
+    ROOM(0,0) TYPE=entrada
+}

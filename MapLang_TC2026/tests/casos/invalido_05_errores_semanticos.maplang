@@ -1,0 +1,9 @@
+// Sintácticamente válido, pero con errores semánticos: coordenada
+// duplicada, sala fuera de los límites declarados, y CONNECT que
+// referencia una sala nunca declarada.
+MAP "Test_Semantico" SIZE 2x2 {
+    ROOM(0,0) TYPE=entrada
+    ROOM(0,0) TYPE=combate ENEMY=goblin
+    ROOM(5,5) TYPE=tesoro ITEM=oro
+    CONNECT (0,0)->(9,9)
+}

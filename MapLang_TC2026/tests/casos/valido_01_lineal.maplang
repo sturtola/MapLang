@@ -1,0 +1,9 @@
+MAP "Mazmorra_del_Dragon" SIZE 8x8 {
+    ROOM(0,0) TYPE=entrada EXITS=[este, sur]
+    ROOM(1,0) TYPE=combate ENEMY=goblin LEVEL=2
+    ROOM(2,0) TYPE=tesoro ITEM=pocion_vida
+    ROOM(3,0) TYPE=jefe ENEMY=dragon LEVEL=10
+    CONNECT (0,0)->(1,0) via "corredor_este"
+    CONNECT (1,0)->(2,0) via "puerta_madera"
+    CONNECT (2,0)->(3,0) via "puerta_secreta"
+}

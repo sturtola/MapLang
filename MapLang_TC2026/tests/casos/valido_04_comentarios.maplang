@@ -1,0 +1,9 @@
+// Este mapa prueba el manejo correcto de comentarios y espacios en blanco.
+MAP "Sala_de_Pruebas" SIZE 1x1 {
+    // comentario antes de la declaración
+    ROOM(0,0)   TYPE=entrada    // comentario al final de línea
+    // otro comentario
+
+
+    EXITS=[norte,sur,este,oeste]
+}
